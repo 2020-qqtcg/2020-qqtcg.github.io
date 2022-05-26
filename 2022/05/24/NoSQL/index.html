@@ -1,0 +1,496 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>NoSQL | 划水摸鱼</title><meta name="keywords" content="data base -"><meta name="author" content="jianjian"><meta name="copyright" content="jianjian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="数据管理基础笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NoSQL">
+<meta property="og:url" content="https://mujian.work/2022/05/24/NoSQL/index.html">
+<meta property="og:site_name" content="划水摸鱼">
+<meta property="og:description" content="数据管理基础笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png">
+<meta property="article:published_time" content="2022-05-24T06:10:13.000Z">
+<meta property="article:modified_time" content="2022-05-24T06:33:08.154Z">
+<meta property="article:author" content="jianjian">
+<meta property="article:tag" content="data base -">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png"><link rel="shortcut icon" href="https://s2.loli.net/2022/04/19/pm7NeZBgDW3VJIP.png"><link rel="canonical" href="https://mujian.work/2022/05/24/NoSQL/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":600},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NoSQL',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-24 14:33:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/04/19/dkPLexUuNBIclp4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">划水摸鱼</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NoSQL</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-24T06:10:13.000Z" title="发表于 2022-05-24 14:10:13">2022-05-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-24T06:33:08.154Z" title="更新于 2022-05-24 14:33:08">2022-05-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NoSQL"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="关系型数据库的价值"><a href="#关系型数据库的价值" class="headerlink" title="关系型数据库的价值"></a>关系型数据库的价值</h1><p><strong>获取持久化数据</strong></p>
+<ul>
+<li>持久储存大量数据</li>
+<li>在大多数的计算机架构中，有两个存储区域<ul>
+<li>速度快但数据易丢失的“主存储器”<ul>
+<li>空间有限</li>
+<li>易挥发</li>
+</ul>
+</li>
+<li>存储量大但速度较慢的“后备存储器”<ul>
+<li>文件系统</li>
+<li>数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>并发</strong></p>
+<ul>
+<li><p>多个用户会一起访问同一份数据体，并且可能要修改这份数据。（大多数情况下，他们都在不同数据区域内各自操作，但是，偶尔也会同时操作一小块数据）</p>
+</li>
+<li><p>关系型数据库提供了 “事务”机制来控制对其数据的访问，以便处理此问题。</p>
+</li>
+<li><p>事务在处理错误时也有用。通过事务更改数据时，如果在处理变更的过程中出错了，那么就可以回滚（roll back）这一事务，以保证数据不受破坏。</p>
+</li>
+</ul>
+<p><strong>集成</strong></p>
+<ul>
+<li><p>企业级应用程序居于一个丰富的生态系统中，它需要与其他应用程序协同工作。不同的应用程序经常要使用同一份数据，而且某个应用程序更新完数据之后，必须让其他应用程序知道这份数据已经改变了。</p>
+</li>
+<li><p>常用的办法是使用共享数据库集成(shared database integration) ，多个应用程序都将数据保存在同一个数据库中。这样一来，所有应用程序很容易就能使用彼此的数据了。</p>
+</li>
+<li><p>与多用户访问单一应用程序时一样，数据库的并发控制机制也可以应对多个应用程序。</p>
+</li>
+</ul>
+<p><strong>近乎标准的模型</strong></p>
+<ul>
+<li><p>关系型数据库以近乎标准的方式提供了数据模型。</p>
+</li>
+<li><p>尽管各种关系型数据库之间仍有差异，但其核心机制相同</p>
+<ul>
+<li>不同厂商的SQL方言相似</li>
+<li>“事务” 的操作方式也几乎一样</li>
+</ul>
+</li>
+</ul>
+<h1 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h1><h2 id="阻抗失谐"><a href="#阻抗失谐" class="headerlink" title="阻抗失谐"></a>阻抗失谐</h2><ul>
+<li><p>基于关系代数(relational algebra)，关系模型把数据组织成 “关系”(relation)和“元组”(tuple)。</p>
+<ul>
+<li>元组是由“键值对”(name-value pair)构成的集合</li>
+<li>而关系则是元组的集合。</li>
+<li>SQL操作所使用及返回的数据都是“关系”</li>
+<li>元组不能包含“嵌套记录”(nested record)或“列表”(list) 等任何结构</li>
+</ul>
+</li>
+<li><p>而内存中的数据结构则无此限制，它可以使用的数据组织形式比“关系”更丰富。</p>
+</li>
+<li><p>关系模型和内存中的数据结构之间存在差异。这种现象通常称为“阻抗失谐”。</p>
+<ul>
+<li>如果在内存中使用了较为丰富的数据结构，那么要把它保存到磁盘之前，必须先将其转换成“关系形式。于是就发生了“阻抗失谐”：需要在两种不同的表示形式之间转译</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/05/10/wcUylAfs36jSoYd.png" alt="image-20220510152801602"></p>
+<p><strong>解决办法</strong></p>
+<ul>
+<li>面向对象数据库</li>
+<li>对象-关系映射框架：通过映射模式表达转换</li>
+</ul>
+<p>存在查询性能问题和集成问题</p>
+<h2 id="集成数据库"><a href="#集成数据库" class="headerlink" title="集成数据库"></a>集成数据库</h2><p><img src="https://s2.loli.net/2022/05/10/bSGc1DClVORqUhp.png" alt="image-20220510153828335"></p>
+<h2 id="应用程序数据库"><a href="#应用程序数据库" class="headerlink" title="应用程序数据库"></a>应用程序数据库</h2><p><img src="https://s2.loli.net/2022/05/10/UiVSvseLXdDhWqt.png" alt="image-20220510153857086"></p>
+<h2 id="集群问题"><a href="#集群问题" class="headerlink" title="集群问题"></a>集群问题</h2><p><img src="https://s2.loli.net/2022/05/10/4uBDKP6mzrnQ3H7.png" alt="image-20220510154614961"></p>
+<h2 id="NoSQL"><a href="#NoSQL" class="headerlink" title="$NoSQL$"></a>$NoSQL$</h2><p><img src="https://s2.loli.net/2022/05/10/YM69xKjN8cvAUFe.png" alt="image-20220510154643935"></p>
+<h1 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h1><p>把一组相互关联的对象视为一个整体单元来操作，而这个单元就叫聚合（aggregate）。</p>
+<ul>
+<li><p>通过原子操作(atomic operation)更新聚合的值（含一致性管理）</p>
+</li>
+<li><p>以聚合为单位与数据存储通信</p>
+</li>
+<li><p>在集群中操作数据库时，用聚合为单位来复制和分片</p>
+</li>
+<li><p>由于程序员经常通过聚合结构来操作数据，故而采用聚合也能让其工作更为轻松。面向聚合操作数据时所用的单元，其结构比元组集合复杂得多</p>
+</li>
+<li><p>“键值数据库”、“文档数据库”、“列族数据库”</p>
+</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/05/13/y4AhjSV6LBmTDEc.png" alt="image-20220513144105476"></p>
+<p><img src="https://s2.loli.net/2022/05/13/SkY4Vb8oidDfqJg.png" alt="image-20220513144115333"></p>
+<p><img src="https://s2.loli.net/2022/05/24/Fn2zQEaiKR8XYDG.png" alt="image-20220513144127050"></p>
+<p><img src="https://s2.loli.net/2022/05/13/u4H1MirLvZ6FkCn.png" alt="image-20220513144152085"></p>
+<p><strong>聚合无知</strong></p>
+<p>关系型数据库的数据模型中，没有“聚合”这一概念，因此我们称之为“聚合无知”(aggregate- ignorant)。 </p>
+<ul>
+<li>“图数据库”也是聚合无知的。</li>
+</ul>
+<p>聚合反应数据操作的边界，很难在共享数据的多个场景中“正确” 划分，对某些数据交互有用的聚合结构，可能会阻碍另一些数据交互</p>
+<ul>
+<li><p>在客户下单并核查订单，以及零售商处理订单时，将订单视为一个聚合结构就比较合适。</p>
+</li>
+<li><p>如零售商要分析过去几个月的产品销售情况，那么把订单做成一个聚合结构反而麻烦了。要取得商品销售记录，就必须深挖数据库中的每一个聚合。</p>
+</li>
+<li><p>若是采用“聚合无知模型”，那么很容易就能以不同方式来查看数据</p>
+</li>
+</ul>
+<p>在操作数据时，如果没有一种占主导地位的结构，那么选用此模型效果会更好。</p>
+<p><strong>聚合之间的关系</strong></p>
+<p>例如：把订单和客户放在两个聚合中，但是想在它们之间设定某种关系，以便能根据订单查出客户数据。</p>
+<ul>
+<li><p>要提供这种关联，最简单的办法就是把客户ID嵌入订单的聚合数据中。在应用层级提供关联。</p>
+</li>
+<li><p>在数据库层级提供聚合之间关系的表达机制</p>
+</li>
+</ul>
+<p>操作多个有关联的聚合，由应用保证其正确性</p>
+<ul>
+<li>面向聚合数据库获取数据时以聚合为单元，只能保证单一聚合内部内容的原子性。</li>
+</ul>
+<p><strong>聚合、集群和事务处理</strong></p>
+<p>在集群上运行时，需要把采集数据时所需的节点数降至最小</p>
+<ul>
+<li>如果在数据库中明确包含聚合结构，那么它就可以根据这一重要信息，知道哪些数据需要一起操作了，而且这些数据应该放在同一个节点中</li>
+</ul>
+<p>通常情况下，面向聚合的数据库不支持跨越多个聚合的ACID事务。它每次只能在一个聚合结构上执行原子操作。</p>
+<ul>
+<li><p>如果想以原子方式操作多个聚合，那么就必须自己组织应用程序的代码</p>
+</li>
+<li><p>在实际应用中，大多数原子操作都可以局限于某个聚合结构内部，而且，在将数据划分为聚合时，这也是要考虑的因素之一</p>
+</li>
+</ul>
+<h1 id="主要的-NoSQL-数据模型"><a href="#主要的-NoSQL-数据模型" class="headerlink" title="主要的$NoSQL$数据模型"></a>主要的$NoSQL$数据模型</h1><h2 id="键值数据模型与文档数据模型"><a href="#键值数据模型与文档数据模型" class="headerlink" title="键值数据模型与文档数据模型"></a>键值数据模型与文档数据模型</h2><p>这两类数据库都包含大量聚合，每个聚合中都有一个获取数据所用的键或ID。</p>
+<p>两种模型的区别是:</p>
+<ul>
+<li>键值数据库的聚合不透明，只包含一些没有太多意义的大块信息<ul>
+<li>聚合中可以存储任意数据。数据库可能会限制聚合的总大小，但除此之外，其他方面都很随意</li>
+<li>在键值数据库中，要访问聚合内容，只能通过键来查找</li>
+</ul>
+</li>
+<li>在文档数据库的聚合中，可以看到其结构。<ul>
+<li>限制其中存放的内容，它定义了其允许的结构与数据类型</li>
+<li>能够更加灵活地访问数据。通过用聚合中的字段查询，可以只获取一部分聚合，而不用获取全部内容</li>
+<li>可以按照聚合内容创建索引</li>
+</ul>
+</li>
+</ul>
+<h2 id="列族存储"><a href="#列族存储" class="headerlink" title="列族存储"></a>列族存储</h2><p>大部分数据库都以行为单元存储数据。然而，有些情况下写入操作执行得很少，但是经常需要一次读取若干行中的很多列。此时，列存储数据库将所有行的某一组作为基本存储单元</p>
+<p>列族数据库将列组织为列族。每一列都必须是某个列族的一部分，而且访问数据的单元也得是列</p>
+<ul>
+<li>某个列族中的数据经常需要一起访问</li>
+</ul>
+<p>列族模型将其视为两级聚合结构</p>
+<ul>
+<li>与“键值存储”相同，第一个键通常代表行标识符，可以用它来获取想要的聚合</li>
+<li>列族结构与“键值存储”的区别在于，其“行聚合”本身又是一个映射，其中包含一些更为详细的值。这些“二级值”就叫做“列”。与整体访问某行数据一样，我们可以操作特定的列</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/05/13/PHsm6OVpz1hivSD.png" alt="image-20220513150121818"></p>
+<p>两种数据组织方式</p>
+<ul>
+<li>面向行：每一行都是一个聚合，例如ID为1234的顾客就是一个聚合，该聚合内部存有一些包含有用数据块（客户信息、订单纪录）的列族</li>
+<li>面向列：每个列族都定义了一种记录类型(例如客户信息)，其中每行都表示一条记录。数据库中的大“行”理解为列族中每一个短行记录的串接</li>
+</ul>
+<h2 id="面向聚合的数据模型"><a href="#面向聚合的数据模型" class="headerlink" title="面向聚合的数据模型"></a>面向聚合的数据模型</h2><p>共同点</p>
+<ul>
+<li><p>都使用聚合这一概念，而且聚合中都有一个可以查找其内容的索引键。</p>
+</li>
+<li><p>在集群上运行时，聚合是中心环节，因为数据库必须保证将聚合内的数据存放在同一个节点上。</p>
+</li>
+<li><p>聚合是“更新”操作的最小数据单位(atomic unit)，对事务控制来说，以聚合为操作单元</p>
+</li>
+</ul>
+<p>差别</p>
+<ul>
+<li><p>键值数据模型将聚合看作不透明的整体，只能根据键来查出整个聚合，而不能仅仅查询或获取其中的一部分</p>
+</li>
+<li><p>文档模型的聚合对数据库透明，于是就可以只查询并获取其中一部分数据了，不过，由于文档没有模式，因此在想优化存储并获取聚合中的部分内容时，数据库不太好调整文档结构</p>
+</li>
+<li><p>列族模型把聚合分为列族，让数据库将其视为行聚合内的一个数据单元。此类聚合的结构有某种限制，但是数据库可利用此种结构的优点来提高其易访问性。</p>
+</li>
+</ul>
+<h2 id="图数据库"><a href="#图数据库" class="headerlink" title="图数据库"></a>图数据库</h2><p><img src="https://s2.loli.net/2022/05/13/qhgjb34eXmtLUps.png" alt="image-20220513150946662"></p>
+<ul>
+<li><p>图数据库的基本数据模型：由边(或称“弧”，arc)连接而成的若干节点。</p>
+</li>
+<li><p>可以用专门为“图”而设计的查询操作来搜寻图数据库的网络了</p>
+<ul>
+<li>指定节点，通过边进行查询</li>
+</ul>
+</li>
+<li><p>关系型数据可以通过“外键”实现，查询中的多次连接，效率较差</p>
+</li>
+</ul>
+<h2 id="无模式"><a href="#无模式" class="headerlink" title="无模式"></a>无模式</h2><p>$NoSQL$数据库无模式：</p>
+<ul>
+<li>“键值数据库”可以把任何数据存放在一个“键”的名下</li>
+<li>“文档数据库”对所存储的文档结构没有限制</li>
+<li>在列族数据库中，任意列里面都可以随意存放数据</li>
+<li>图数据库中可以新增边，也可以随意向节点和边中添加属性</li>
+</ul>
+<h2 id="格式不一致的数据"><a href="#格式不一致的数据" class="headerlink" title="格式不一致的数据"></a>格式不一致的数据</h2><p>每条记录都拥有不同字段集(set of field) </p>
+<p>关系型数据库中，“模式”会将表内每一行的数据类型强行统一，若不同行所存放的数据类型不同，那这么做就很别扭。</p>
+<ul>
+<li><p>要么得分别用很多列来存放这些数据，而且把用不到的字段值填成null(这就成了”稀疏表”，sparse table)，</p>
+</li>
+<li><p>要么就要使用类似custom column 4这样没有意义的列类型。</p>
+</li>
+</ul>
+<p>无模式表则没有这么麻烦，每条记录只要包含其需要的数据即可，不用再担心上面的问题了。</p>
+<h2 id="无模式的问题"><a href="#无模式的问题" class="headerlink" title="无模式的问题"></a>无模式的问题</h2><p>存在“隐含模式”。在编写数据操作代码时，对数据结构所做的一系列假设</p>
+<ul>
+<li><p>应用与数据的耦合问题</p>
+</li>
+<li><p>无法在数据库层级优化和验证数据</p>
+</li>
+</ul>
+<p>在集成数据库中，很难解决</p>
+<ul>
+<li><p>使用应用程序数据库，并使用$Web Services、SOA$等完成集成</p>
+</li>
+<li><p>在聚合中为不同应用程序明确划分出不同区域</p>
+<ul>
+<li>在文档数据库中，可以把文档分成不同的区段(section) </li>
+<li>在列族数据库，可以把不同的列族分给不同的应用程序</li>
+</ul>
+</li>
+</ul>
+<h1 id="分布式数据库"><a href="#分布式数据库" class="headerlink" title="分布式数据库"></a>分布式数据库</h1><p>数据分布有两条路径，既可以在两者中选一个来用，也可以同时使用它们</p>
+<ul>
+<li>分片：将不同数据存放在不同节点中</li>
+<li>复制：将同一份数据拷贝至多个节点<ul>
+<li>主从式和对等式</li>
+</ul>
+</li>
+</ul>
+<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><p>一般来说，数据库的繁忙体现在：不同用户需要访问数据集中的不同部分，在这种情况下，把数据的各个部分存放于不同的服务器中，一次实现横向扩展，这种技术就叫<strong>分片</strong></p>
+<p><img src="https://s2.loli.net/2022/05/24/nuH2cwUrXSE5Zt8.png" alt="image-20220517142149738"></p>
+<p>在理想情况下，不同的服务器节点会服务于不同的用户。每位用户只需与一台服务器通信，并且很快就能获得服务器的响应。网络负载相当均衡地分布于各台服务器上。</p>
+<p>为达成目标，必须保证需要同时访问的那些数据都存放在同一节点上，而且节点必须排布好这些数据块，使访问速度最优。</p>
+<ul>
+<li><p>若使用面向聚合的数据库，可以把聚合作为分布数据的单元。</p>
+</li>
+<li><p>在节点的数据排布问题上，有若干个与性能改善相关的因素。</p>
+<ul>
+<li>地理因素</li>
+<li>负载均衡</li>
+<li>聚合有序放置</li>
+</ul>
+</li>
+</ul>
+<p>采用应用程序的逻辑实现分片</p>
+<ul>
+<li><p>编程模型复杂化，因为应用程序的代码必须负责把查询操作分布到多个分片上</p>
+</li>
+<li><p>若想重新调整分片，那么既要修改程序代码，又要迁移数据</p>
+</li>
+</ul>
+<p>采用NoSQL数据库提供的“自动分片”( auto-sharding)功能</p>
+<ul>
+<li><p>让数据库自己负责把数据分布到各分片</p>
+</li>
+<li><p>并且将数据访问请求引导至适当的分片上</p>
+</li>
+</ul>
+<p>分片可以同时提升读取与写入效率</p>
+<ul>
+<li>使用“复制”技术，尤其是带缓存的复制，可以极大地改善读取性能，但对于写操作帮助不大</li>
+</ul>
+<p>分片对改善数据库的“故障恢复能力”帮助并不大。尽管数据分布在不同的节点上，但是和“单一服务器”方案一样，只要某节点出错，那么该分片上的数据就无法访问了</p>
+<ul>
+<li><p>在发生故障时，只有访问此数据的那些用户才会受影响，而其余用户则能正常访问</p>
+</li>
+<li><p>由于多节点问题，从实际效果出发，分片技术可能会降低数据库的错误恢复能力</p>
+</li>
+</ul>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p><img src="https://s2.loli.net/2022/05/17/iaZuR9keQwNvsxH.png" alt="image-20220517143745975"></p>
+<p><img src="https://s2.loli.net/2022/05/24/PcHZD6MkrgdjpJ1.png" alt="image-20220517145103719"></p>
+<p><img src="https://s2.loli.net/2022/05/17/gMouTSUazeqACpY.png" alt="image-20220517145130732"></p>
+<p><img src="https://s2.loli.net/2022/05/17/WKIXwiNq5nUz3tj.png" alt="image-20220517145150224"></p>
+<p><img src="https://s2.loli.net/2022/05/17/kOpbc3a9U47LCNd.png" alt="image-20220517145208907"></p>
+<h1 id="分布式模型中的一致性"><a href="#分布式模型中的一致性" class="headerlink" title="分布式模型中的一致性"></a>分布式模型中的一致性</h1><p>当两个客户端试图同时修改一份数据时，会发生“写入冲突”。而当某客户端在另一客户端执行写入操作的过程中读取数据时，则会发生“读写冲突”</p>
+<p>悲观方式以锁定数据纪律来避免冲突：写入锁</p>
+<p>乐观方式则在事后检测冲突并将其恢复</p>
+<ul>
+<li>“条件更新”，任意客户在执行更新操作之前，都要先测试数据的当前值和上一次读入的值是否相同</li>
+<li>保存冲突数据。用户自行合并或自动合并</li>
+</ul>
+<p>“图数据库”常常和关系型数据库一样，也支持ACID事务</p>
+<p>面向聚合的数据库通常支持“原子更新”，但仅限于单一聚合内部，“一致性”可以在某个聚合内部保持，但在各聚合之间则不行，在执行影响多个聚合的更新操作时，会留下一段时间空挡，让客户端有可能在此刻读出逻辑不一致的数据，存在不一致风险的时间长度就叫“不一致窗口”。</p>
+<h2 id="复制一致性："><a href="#复制一致性：" class="headerlink" title="复制一致性："></a>复制一致性：</h2><p>要求从不同副本中欧冠读取同一个数据项时，所得到的值相同</p>
+<p><img src="https://s2.loli.net/2022/05/24/DpieofgnXV7BsP3.png" alt="image-20220524142645711"></p>
+<ul>
+<li><p>在分布式系统中，如果某些节点收到了更新数据，而另外一些节点却尚未收到，那么这种情况就视为“读写冲突”。</p>
+</li>
+<li><p>若写入操作已经传播至所有节点，则此刻的数据库就具备“最终一致性”( eventually consistent)</p>
+</li>
+<li><p>复制不一致性带来的“不一致窗口”，在考虑网络环境后，会比单一节点导致的“不一致窗口”长的多</p>
+<ul>
+<li>不一致性窗口对应用的影响不同</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/05/24/puF7ZcmdNaqlxDX.png" alt="image-20220524143251097"></p>
+<p><img src="https://s2.loli.net/2022/05/24/LrWOgU1Fbeahtil.png" alt="image-20220524143304214"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">jianjian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://mujian.work/2022/05/24/NoSQL/">https://mujian.work/2022/05/24/NoSQL/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mujian.work" target="_blank">划水摸鱼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/data-base/">data base -</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/05/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%EF%BC%89/"><img class="next-cover" src="https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机网络（数据链路层）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/04/25/%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80/" title="数据管理基础"><img class="cover" src="https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-25</div><div class="title">数据管理基础</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-number">1.</span> <span class="toc-text">关系型数据库的价值</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B1%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">由来</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%BB%E6%8A%97%E5%A4%B1%E8%B0%90"><span class="toc-number">2.1.</span> <span class="toc-text">阻抗失谐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E6%88%90%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.2.</span> <span class="toc-text">集成数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.3.</span> <span class="toc-text">应用程序数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E9%97%AE%E9%A2%98"><span class="toc-number">2.4.</span> <span class="toc-text">集群问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NoSQL"><span class="toc-number">2.5.</span> <span class="toc-text">$NoSQL$</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%81%9A%E5%90%88"><span class="toc-number">3.</span> <span class="toc-text">聚合</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%9A%84-NoSQL-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.</span> <span class="toc-text">主要的$NoSQL$数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.1.</span> <span class="toc-text">键值数据模型与文档数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%97%E6%97%8F%E5%AD%98%E5%82%A8"><span class="toc-number">4.2.</span> <span class="toc-text">列族存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E8%81%9A%E5%90%88%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.3.</span> <span class="toc-text">面向聚合的数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">4.4.</span> <span class="toc-text">图数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.5.</span> <span class="toc-text">无模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">4.6.</span> <span class="toc-text">格式不一致的数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">4.7.</span> <span class="toc-text">无模式的问题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">5.</span> <span class="toc-text">分布式数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%89%87"><span class="toc-number">5.1.</span> <span class="toc-text">分片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6"><span class="toc-number">5.2.</span> <span class="toc-text">复制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">6.</span> <span class="toc-text">分布式模型中的一致性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%9A"><span class="toc-number">6.1.</span> <span class="toc-text">复制一致性：</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 By jianjian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Oh, year!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

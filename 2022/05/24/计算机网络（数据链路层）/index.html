@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>计算机网络（数据链路层） | 划水摸鱼</title><meta name="keywords" content="计网,笔记"><meta name="author" content="jianjian"><meta name="copyright" content="jianjian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="多路访问控制协议信道划分MAC协议随机访问MAC协议时隙ALOHA协议假定所有帧大小相同，时间被划分为等长的时隙，每个时隙可以传输1个帧，节点只能在时隙开始时刻发送帧，节点间时钟同步，如果2个或2个以上节点在同一时隙发送帧，节点即检测到冲突 当节点有新的帧时，在下一个时隙发送  如果无冲突：该节点可以在下一个时隙继续发送新的帧 如果冲突：该节点在下一个时隙以概率p重传该帧，直至成功   优点：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络（数据链路层）">
+<meta property="og:url" content="https://mujian.work/2022/05/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%EF%BC%89/index.html">
+<meta property="og:site_name" content="划水摸鱼">
+<meta property="og:description" content="多路访问控制协议信道划分MAC协议随机访问MAC协议时隙ALOHA协议假定所有帧大小相同，时间被划分为等长的时隙，每个时隙可以传输1个帧，节点只能在时隙开始时刻发送帧，节点间时钟同步，如果2个或2个以上节点在同一时隙发送帧，节点即检测到冲突 当节点有新的帧时，在下一个时隙发送  如果无冲突：该节点可以在下一个时隙继续发送新的帧 如果冲突：该节点在下一个时隙以概率p重传该帧，直至成功   优点：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png">
+<meta property="article:published_time" content="2022-05-24T01:57:30.000Z">
+<meta property="article:modified_time" content="2022-05-26T15:25:30.047Z">
+<meta property="article:author" content="jianjian">
+<meta property="article:tag" content="计网">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png"><link rel="shortcut icon" href="https://s2.loli.net/2022/04/19/pm7NeZBgDW3VJIP.png"><link rel="canonical" href="https://mujian.work/2022/05/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":600},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '计算机网络（数据链路层）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-26 23:25:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/04/19/dkPLexUuNBIclp4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">划水摸鱼</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">计算机网络（数据链路层）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-24T01:57:30.000Z" title="发表于 2022-05-24 09:57:30">2022-05-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-26T15:25:30.047Z" title="更新于 2022-05-26 23:25:30">2022-05-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%BD%91/">计网</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">862</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="计算机网络（数据链路层）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="多路访问控制协议"><a href="#多路访问控制协议" class="headerlink" title="多路访问控制协议"></a>多路访问控制协议</h1><h2 id="信道划分MAC协议"><a href="#信道划分MAC协议" class="headerlink" title="信道划分MAC协议"></a>信道划分MAC协议</h2><h2 id="随机访问MAC协议"><a href="#随机访问MAC协议" class="headerlink" title="随机访问MAC协议"></a>随机访问MAC协议</h2><h3 id="时隙ALOHA协议"><a href="#时隙ALOHA协议" class="headerlink" title="时隙ALOHA协议"></a>时隙ALOHA协议</h3><p>假定所有帧大小相同，时间被划分为等长的时隙，每个时隙可以传输1个帧，节点只能在时隙开始时刻发送帧，节点间时钟同步，如果2个或2个以上节点在同一时隙发送帧，节点即检测到冲突</p>
+<p>当节点有新的帧时，在下一个时隙发送</p>
+<ul>
+<li>如果无冲突：该节点可以在下一个时隙继续发送新的帧</li>
+<li>如果冲突：该节点在下一个时隙以概率p重传该帧，直至成功</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/05/26/fzPQvVWqYjdSRyr.png" alt="image-20220526214929245"></p>
+<p>优点：</p>
+<ul>
+<li>单个节点活动是，可以连续以信道全部速率传输数据</li>
+<li>高度分散化：只需同步时隙</li>
+<li>简单</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>冲突，浪费时隙</li>
+<li>空闲时隙</li>
+<li>节点也许能以远小于分组传输时间检测到冲突</li>
+<li>要求所有节点时钟同步</li>
+</ul>
+<blockquote>
+<p><img src="https://s2.loli.net/2022/05/26/7gcvXrlKNZjpi9n.png" alt="image-20220526215302844"></p>
+</blockquote>
+<h3 id="非时隙ALOHA协议"><a href="#非时隙ALOHA协议" class="headerlink" title="非时隙ALOHA协议"></a>非时隙ALOHA协议</h3><p>更加简单，无需同步，当有新的帧生成时，立即发送</p>
+<p>冲突可能性增大，在$t_0$时刻发送帧，会与在[$t_0-1,t_0+1$]期间其它节点发送的帧冲突</p>
+<p><img src="https://s2.loli.net/2022/05/26/FBHKZk6Nw52LfST.png" alt="image-20220526215754789"></p>
+<blockquote>
+<p><img src="https://s2.loli.net/2022/05/26/2LWrV9bFlvahcTE.png" alt="image-20220526215928580"></p>
+</blockquote>
+<h3 id="CSMA协议"><a href="#CSMA协议" class="headerlink" title="CSMA协议"></a>CSMA协议</h3><p>载波监听多路访问协议（carrier sense multiple access）</p>
+<p>发送帧之前，监听信道</p>
+<ul>
+<li>信道空闲：发送完整帧</li>
+<li>信道忙：推迟发送<ul>
+<li>1-坚持CSMA：一直监听</li>
+<li>非坚持CSMA：随机等待一段时间再监听</li>
+<li>P-坚持CSMA：以概率p监听信道</li>
+</ul>
+</li>
+</ul>
+<p>冲突可能仍然存在：碰巧时间相同或信号传播延迟</p>
+<p><img src="https://s2.loli.net/2022/05/26/3cVkDAdnPUM6Hqx.png" alt="image-20220526221331339"></p>
+<p>产生冲突时继续发送冲突帧会造成信道资源的浪费</p>
+<h3 id="CSMA-CD协议"><a href="#CSMA-CD协议" class="headerlink" title="CSMA/CD协议"></a>CSMA/CD协议</h3><p>CD （冲突检测）</p>
+<p><img src="https://s2.loli.net/2022/05/26/esw51BbLxT42hYE.png" alt="image-20220526221504651"></p>
+<p>短时间内可以检测到冲突，冲突后传输终止，减少信道浪费</p>
+<p>冲突检测：</p>
+<ul>
+<li>有线局域网易于实现：测量信号强度，比较发射信号与接收信号</li>
+<li>无线局域网很难实现：接收信号强度淹没在本地发射信号强度下</li>
+</ul>
+<blockquote>
+<p>边发边听，不发不听</p>
+<p>在发送数据帧的过程中监听冲突，发送结束后结束监听冲突</p>
+</blockquote>
+<p><img src="https://s2.loli.net/2022/05/26/DymF6e9JaHZCMOq.png" alt="image-20220526222934789"></p>
+<blockquote>
+<p><img src="https://s2.loli.net/2022/05/26/i8UmO5nJyP3W7kl.png" alt="image-20220526223411348"></p>
+<p><strong>效率</strong></p>
+<p><img src="https://s2.loli.net/2022/05/26/jSy5ERnGlr7t2Pf.png" alt="image-20220526223459054"></p>
+</blockquote>
+<h2 id="轮转MAC协议"><a href="#轮转MAC协议" class="headerlink" title="轮转MAC协议"></a>轮转MAC协议</h2><p><strong>轮询</strong>：主节点轮流邀请从属节点发送数据</p>
+<p><img src="https://s2.loli.net/2022/05/26/fzyMhLFbYrQjWnC.png" alt="image-20220526224733647"></p>
+<p>存在问题：</p>
+<ul>
+<li>轮询开销</li>
+<li>等待延迟</li>
+<li>单点故障</li>
+</ul>
+<p><strong>令牌传递</strong>：控制令牌依次从一个节点传递到下一个节点</p>
+<ul>
+<li>令牌：特殊帧</li>
+</ul>
+<p>环形网络，令牌沿着一个方向传递</p>
+<p><img src="https://s2.loli.net/2022/05/26/2jiJIl59GNkzyoO.png" alt="image-20220526224842113"></p>
+<p>存在问题：</p>
+<ul>
+<li>令牌开销</li>
+<li>等待延迟</li>
+<li>单点故障</li>
+</ul>
+<h1 id="MAC地址"><a href="#MAC地址" class="headerlink" title="MAC地址"></a>MAC地址</h1><p>也称为LAN地址，物理地址，以太网地址</p>
+<p>作用：用于局域网内标识一个帧从哪个接口发出，到达哪个物理相连的其它接口</p>
+<p>48位MAC地址（用于大部分LANs），固化在网卡的ROM中，有时也可软件设置（有时可以修改，但要确保修改后的MAC地址在局域网中唯一）</p>
+<ul>
+<li>16进制表示：例如1A-2F-BB-76-09-AD</li>
+</ul>
+<p>局域网中每块网卡都有一个唯一的MAC地址</p>
+<p><img src="C:\Users\MJ\AppData\Roaming\Typora\typora-user-images\image-20220526225928744.png" alt="image-20220526225928744"></p>
+<p>MAC地址又IEEE统一管理与分配，网卡生产商购买MAC地址空间的前24比特，后24位由厂商分配</p>
+<p>MAC地址是“平面地址”，可以携带，可以从一个LAN转移到另一个LAN；不同于IP地址是层次地址，不可携带，依赖于节点连接到哪个子网</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">jianjian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://mujian.work/2022/05/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%EF%BC%89/">https://mujian.work/2022/05/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mujian.work" target="_blank">划水摸鱼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%BD%91/">计网</a><a class="post-meta__tags" href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/24/NoSQL/"><img class="prev-cover" src="https://s2.loli.net/2022/04/25/FBEYPUWA7jveyqh.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">NoSQL</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%89/"><img class="next-cover" src="https://s2.loli.net/2022/05/14/ql1w5dKJmnY3irH.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机网络（网络层）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E5%BA%94%E7%94%A8%E5%B1%82%EF%BC%89/" title="计算机网络（应用层）"><img class="cover" src="https://s2.loli.net/2022/05/07/qf4e2z9YBmPhV3c.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-07</div><div class="title">计算机网络（应用层）</div></div></a></div><div><a href="/2022/05/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%89/" title="计算机网络（网络层）"><img class="cover" src="https://s2.loli.net/2022/05/14/ql1w5dKJmnY3irH.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-14</div><div class="title">计算机网络（网络层）</div></div></a></div><div><a href="/2022/05/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E4%BC%A0%E8%BE%93%E5%B1%82%EF%BC%89/" title="计算机网络（运输层）"><img class="cover" src="https://s2.loli.net/2022/05/12/BOsxyZXEaImMlLf.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-10</div><div class="title">计算机网络（运输层）</div></div></a></div><div><a href="/2022/04/27/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%88%E6%A6%82%E8%BF%B0%EF%BC%89/" title="计算机网络(概述)"><img class="cover" src="https://s2.loli.net/2022/04/27/jbCIaKLHfQw7uWz.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-27</div><div class="title">计算机网络(概述)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E8%B7%AF%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">多路访问控制协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E9%81%93%E5%88%92%E5%88%86MAC%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">信道划分MAC协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AEMAC%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.</span> <span class="toc-text">随机访问MAC协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%9A%99ALOHA%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.1.</span> <span class="toc-text">时隙ALOHA协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E6%97%B6%E9%9A%99ALOHA%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.2.</span> <span class="toc-text">非时隙ALOHA协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSMA%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">CSMA协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSMA-CD%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.4.</span> <span class="toc-text">CSMA&#x2F;CD协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AE%E8%BD%ACMAC%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.3.</span> <span class="toc-text">轮转MAC协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MAC%E5%9C%B0%E5%9D%80"><span class="toc-number">2.</span> <span class="toc-text">MAC地址</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 By jianjian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Oh, year!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
