@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>DDIA第二章 | 划水摸鱼</title><meta name="keywords" content="分布式"><meta name="author" content="jianjian"><meta name="copyright" content="jianjian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="二. 数据模型与查询语言多数应用程序使用层层叠加的数据模型构建，对于每层数据模型的关键问题是：它是如何用低一层的数据模型来表示的 关系模型与文档模型数据被组织成关系，其中每个关系是元组（行）的无序集合，关系型模型致力于将数据库内部的数据表示的细节隐藏在更简洁的接口之后 NoSQL背后的几个驱动因素  需要比关系型数据库更好的可伸缩性，包括非常大的数据集或非常高的写入吞吐量 相比商业数据库，免费和开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDIA第二章">
+<meta property="og:url" content="https://mujian.work/2023/08/04/DDIA%E7%AC%AC%E4%BA%8C%E7%AB%A0/index.html">
+<meta property="og:site_name" content="划水摸鱼">
+<meta property="og:description" content="二. 数据模型与查询语言多数应用程序使用层层叠加的数据模型构建，对于每层数据模型的关键问题是：它是如何用低一层的数据模型来表示的 关系模型与文档模型数据被组织成关系，其中每个关系是元组（行）的无序集合，关系型模型致力于将数据库内部的数据表示的细节隐藏在更简洁的接口之后 NoSQL背后的几个驱动因素  需要比关系型数据库更好的可伸缩性，包括非常大的数据集或非常高的写入吞吐量 相比商业数据库，免费和开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png">
+<meta property="article:published_time" content="2023-08-04T13:51:05.000Z">
+<meta property="article:modified_time" content="2023-08-04T14:07:06.922Z">
+<meta property="article:author" content="jianjian">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png"><link rel="shortcut icon" href="https://s2.loli.net/2022/04/19/pm7NeZBgDW3VJIP.png"><link rel="canonical" href="https://mujian.work/2023/08/04/DDIA%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":600},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DDIA第二章',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-04 22:07:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/04/19/dkPLexUuNBIclp4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">划水摸鱼</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DDIA第二章</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-04T13:51:05.000Z" title="发表于 2023-08-04 21:51:05">2023-08-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-04T14:07:06.922Z" title="更新于 2023-08-04 22:07:06">2023-08-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DDIA/">DDIA</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DDIA第二章"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="二-数据模型与查询语言"><a href="#二-数据模型与查询语言" class="headerlink" title="二. 数据模型与查询语言"></a>二. 数据模型与查询语言</h1><p>多数应用程序使用层层叠加的数据模型构建，对于每层数据模型的关键问题是：它是如何用低一层的数据模型来表示的</p>
+<h2 id="关系模型与文档模型"><a href="#关系模型与文档模型" class="headerlink" title="关系模型与文档模型"></a>关系模型与文档模型</h2><p>数据被组织成关系，其中每个关系是元组（行）的无序集合，关系型模型致力于将数据库内部的数据表示的细节隐藏在更简洁的接口之后</p>
+<p><strong>NoSQL背后的几个驱动因素</strong></p>
+<ul>
+<li>需要比关系型数据库更好的可伸缩性，包括非常大的数据集或非常高的写入吞吐量</li>
+<li>相比商业数据库，免费和开源软件更受偏爱</li>
+<li>关系模型不能很好地支持一些特殊的查询操作</li>
+<li>渴望一种，不受限于关系模型的，根据多动态性与表现力的数据模型</li>
+</ul>
+<blockquote>
+<p><strong>混合持久化</strong>：不同应用程序有不同的需求，一个用例的最佳技术选择可能不同于另一个用例的最佳技术选择，关系数据库与各种非关系数据库可能会一起使用</p>
+</blockquote>
+<p><strong>对象关系不匹配</strong></p>
+<ul>
+<li>大多数应用程序都使用面向对象的编程语言来开发，如果数据存储在关系表中，那么需要一个笨拙的转换层，处于对象和表、行、列的数据库模型之间，这样模型之间的不连贯有时被称为<strong>阻抗不匹配</strong></li>
+<li>ORM可以减少这个转换层所需的样板代码的数量，但是不嫩个完全隐藏这两个模型之间的差异</li>
+</ul>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804215232477.png" alt="image-20230804215232477"></p>
+<p><strong>一对多关系</strong></p>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804215304669.png" alt="image-20230804215304669"></p>
+<ul>
+<li>JSON比多表的关系模式具有更好的局部性，JSON表示中所有相关信息都在同一个地方，一次查询就足够了，而多表关系模式需要执行多个查询，通过外键查询每个表</li>
+</ul>
+<p><strong>多对一和一对多关系</strong></p>
+<p><code>region_id</code> 和 <code>industry_id</code> 是以 ID，而不是纯字符串 “Greater Seattle Area” 和 “Philanthropy” 的形式给出的。</p>
+<blockquote>
+<p>如果用户界面用一个自由文本字段来输入区域和行业，那么将他们存储为纯文本字符串是合理的。另一种方式是给出地理区域和行业的标准化的列表，并让用户从下拉列表或自动填充器中进行选择，其优势如下：</p>
+<ul>
+<li>各个简介之间样式和拼写统一</li>
+<li>避免歧义（例如，如果有几个同名的城市）</li>
+<li>易于更新 —— 名称只存储在一个地方，如果需要更改（例如，由于政治事件而改变城市名称），很容易进行全面更新。</li>
+<li>本地化支持 —— 当网站翻译成其他语言时，标准化的列表可以被本地化，使得地区和行业可以使用用户的语言来显示</li>
+<li>更好的搜索 —— 例如，搜索华盛顿州的慈善家就会匹配这份简介，因为地区列表可以编码记录西雅图在华盛顿这一事实（从 “Greater Seattle Area” 这个字符串中看不出来）</li>
+</ul>
+</blockquote>
+<p>使用ID的好处是，ID对人类没有任何意义，因而永远都不需要改变。任何对人类有意义的东西都可能需要在将来的某个时候发生改变，如果这些信息被复制，所哟荣誉副本都需要更新。这会导致写入开销，也存在不一致的风险。去除此类重复是数据库<strong>规范化</strong>的关键思想。</p>
+<p>对这些数据库进行规范化需要多对一的关系，这与文档模型不太吻合，文档数据库中，一对多树结构没有必要使用连接，对连接的支持通常很弱。如果数据库本身不支持连接，则必须在应用程序代码中通过对数据库进行多个查询来模拟连接。</p>
+<p><strong>网状模型</strong></p>
+<ul>
+<li>通过<strong>访问路径</strong>访问记录</li>
+<li>没有所需数据的路径，就会陷入困境</li>
+<li>改变访问路径困难，更改应用程序的数据模型是很难的</li>
+</ul>
+<p><strong>关系模型</strong></p>
+<ul>
+<li>查询优化器自动决定查询部分以哪个顺序执行，想按新的方式查询数据可以尝试声明一个新的索引，关系模型使天机器应用程序新功能变得容易</li>
+</ul>
+<p><strong>对比</strong></p>
+<ul>
+<li>文档模型的架构灵活性，因局部性而拥有更好的性能，以及对于某些应用程序而言更接近于应用程序使用的数据结构</li>
+<li>应用程序中数据具有类似文档的结构，即一对多的子树关系时适合使用文档模型</li>
+<li>文档模型不能直接引用文档中的嵌套项目，而是需要说 “用户 251 的位置列表中的第二项”,但是，只要文件嵌套不太深，这通常不是问题。</li>
+<li>文档模型对连接的支持比较糟糕，需要多对多关系时不太方便，所以不适用与高关联的数据</li>
+</ul>
+<p><strong>文档数据库中的模式灵活性</strong></p>
+<ul>
+<li>有时称为<strong>无模式</strong>，但实际上存在隐式模式，但不由数据库强制执行，一个更精确的描述是<strong>读时模式</strong></li>
+</ul>
+<blockquote>
+<p><strong>读时模式</strong>：即 schema-on-read，数据的结构是隐含的，只有在数据被读取时才被解释</p>
+<p>假设你把每个用户的全名存储在一个字段中，而现在想分别存储名字和姓氏【23】。在文档数据库中，只需开始写入具有新字段的新文档，并在应用程序中使用代码来处理读取旧文档的情况。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (user &amp;&amp; user.<span class="property">name</span> &amp;&amp; !user.<span class="property">first_name</span>) &#123;</span><br><span class="line"><span class="comment">// Documents written before Dec 8, 2013 don&#x27;t have first_name</span></span><br><span class="line">user.<span class="property">first_name</span> = user.<span class="property">name</span>.<span class="title function_">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>写时模式</strong>：即 schema-on-write，传统的关系数据库方法中，模式明确，且数据库确保所有的数据都符合其模式</p>
+<p>上面案例中，如果在“静态类型”数据库模式中，通常会执行迁移，进行模式变更。如果是一个大型表，模式变更的速度可能会很慢。</p>
+<p>读时模式类似于编程语言中的动态（运行时）类型检查，而写时模式类似于静态（编译时）类型检查。就像静态和动态类型检查的相对优点具有很大的争议性一样【22】，数据库中模式的强制性是一个具有争议的话题，一般来说没有正确或错误的答案。</p>
+</blockquote>
+<p><strong>查询的数据局部性</strong></p>
+<ul>
+<li>局部性可以减少查询次数，一次将所有文档检索出来</li>
+<li>局部性仅仅适用于同时需要文档绝大部分的内容的情况，数据库通常需要加载整个文档，即使只访问其中一小部分，这对于大型文档来说是浪费。更新文档是通常需要整个重写，只有不改变文档大小的修改才容易原地执行。因此通常建议保持相对较小的文档，并避免增加文档大小的写入</li>
+</ul>
+<p><strong>文档和关系数据库的融合</strong>：关系模型和文档模型逐渐拥有互相的特点</p>
+<h2 id="数据查询语言"><a href="#数据查询语言" class="headerlink" title="数据查询语言"></a>数据查询语言</h2><blockquote>
+<p><strong>命令式语言</strong>告诉计算机以特定顺序执行，某些操作。</p>
+<ul>
+<li>SQL</li>
+</ul>
+<p><strong>声明式语言</strong>中，你只需要指定所需数据的模式-结果必须符合哪些条件，以及如何将数据转换，但不用指定如何实现这一目标。</p>
+<ul>
+<li>CSS</li>
+<li>聚合管道</li>
+</ul>
+<p>处于两者之间的查询</p>
+<ul>
+<li>MapReduce查询</li>
+</ul>
+<p>声明式语言更适合并行执行，因为它仅指定结果的模式，而不指定用于确定结果的算法，在适当情况下，数据库可以自由使用查询语言的并行实现</p>
+<p>命令代码很难在多个核心和多个机器之间并行化，因为它指定了指令必须以特定顺序执行</p>
+</blockquote>
+<h2 id="图数据库"><a href="#图数据库" class="headerlink" title="图数据库"></a>图数据库</h2><p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804215332957.png" alt="image-20230804215332957"></p>
+<p>适用于多对多关系，多种数据可以被建模为一个图形，典型例子包括：</p>
+<ul>
+<li>社交图谱</li>
+<li>网络图谱</li>
+<li>公路或铁路网络</li>
+</ul>
+<h3 id="属性图"><a href="#属性图" class="headerlink" title="属性图"></a>属性图</h3><p>在属性图模型中，每个顶点（vertex）包括：</p>
+<ul>
+<li>唯一的标识符</li>
+</ul>
+<!---->
+<ul>
+<li>一组出边（outgoing edges）</li>
+<li>一组入边（ingoing edges）</li>
+<li>一组属性（键值对）</li>
+</ul>
+<p>每条边（edge）包括：</p>
+<ul>
+<li>唯一标识符</li>
+<li>边的起点（<strong>尾部顶点</strong>，即 tail vertex）</li>
+<li>边的终点（<strong>头部顶点</strong>，即 head vertex）</li>
+<li>描述两个顶点之间关系类型的标签</li>
+<li>一组属性（键值对）</li>
+</ul>
+<p>可以将图存储看作由两个关系表组成，一个存储顶点，另一个存储边</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE vertices (</span><br><span class="line">  vertex_id  INTEGER PRIMARY KEY,</span><br><span class="line">  properties JSON</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">CREATE TABLE edges (</span><br><span class="line">  edge_id     INTEGER PRIMARY KEY,</span><br><span class="line">  tail_vertex INTEGER REFERENCES vertices (vertex_id),</span><br><span class="line">  head_vertex INTEGER REFERENCES vertices (vertex_id),</span><br><span class="line">  label       TEXT,</span><br><span class="line">  properties  JSON</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">CREATE INDEX edges_tails ON edges (tail_vertex);</span><br><span class="line">CREATE INDEX edges_heads ON edges (head_vertex);</span><br></pre></td></tr></table></figure>
+<h3 id="Cypher查询语言"><a href="#Cypher查询语言" class="headerlink" title="Cypher查询语言"></a>Cypher查询语言</h3><p>(声明式查询语言)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE</span><br><span class="line">  (NAmerica:Location &#123;name:&#x27;North America&#x27;, type:&#x27;continent&#x27;&#125;),</span><br><span class="line">  (USA:Location      &#123;name:&#x27;United States&#x27;, type:&#x27;country&#x27;  &#125;),</span><br><span class="line">  (Idaho:Location    &#123;name:&#x27;Idaho&#x27;,         type:&#x27;state&#x27;    &#125;),</span><br><span class="line">  (Lucy:Person       &#123;name:&#x27;Lucy&#x27; &#125;),</span><br><span class="line">  (Idaho) -[:WITHIN]-&gt;  (USA)  -[:WITHIN]-&gt; (NAmerica),</span><br><span class="line">  (Lucy)  -[:BORN_IN]-&gt; (Idaho)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>每个顶点都有一个像 <code>USA</code> 或 <code>Idaho</code> 这样的符号名称，查询的其他部分可以使用这些名称在顶点之间创建边，使用箭头符号：<code>（Idaho） - [：WITHIN] -&gt;（USA）</code> 创建一条标记为 <code>WITHIN</code> 的边，<code>Idaho</code> 为尾节点，<code>USA</code> 为头节点</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MATCH</span><br><span class="line">  (person) -[:BORN_IN]-&gt;  () -[:WITHIN*0..]-&gt; (us:Location &#123;name:&#x27;United States&#x27;&#125;),</span><br><span class="line">  (person) -[:LIVES_IN]-&gt; () -[:WITHIN*0..]-&gt; (eu:Location &#123;name:&#x27;Europe&#x27;&#125;)</span><br><span class="line">RETURN person.name</span><br></pre></td></tr></table></figure>
+<p>例：查找所有从美国移民到欧洲的人的Cypher查询</p>
+<p>找到满足以下两个条件的所有顶点（称之为 person 顶点）：</p>
+<ol>
+<li><code>person</code> 顶点拥有一条到某个顶点的 <code>BORN_IN</code> 出边。从那个顶点开始，沿着一系列 <code>WITHIN</code> 出边最终到达一个类型为 <code>Location</code>，<code>name</code> 属性为 <code>United States</code> 的顶点。</li>
+<li><code>person</code> 顶点还拥有一条 <code>LIVES_IN</code> 出边。沿着这条边，可以通过一系列 <code>WITHIN</code> 出边最终到达一个类型为 <code>Location</code>，<code>name</code> 属性为 <code>Europe</code> 的顶点。</li>
+</ol>
+<p>对于这样的 <code>Person</code> 顶点，返回其 <code>name</code> 属性。</p>
+<blockquote>
+<p><code>WITHIN*0</code> ：沿着 <code>WITHIN</code> 边，零次或多次</p>
+</blockquote>
+<h3 id="SQL中的图查询"><a href="#SQL中的图查询" class="headerlink" title="SQL中的图查询"></a>SQL中的图查询</h3><p>SQL中可以实现图查询，但语法非常的笨拙，不同数据模型是为了不同的场景而设计的，选择不同的数据模型非常重要</p>
+<h3 id="三元存储和SPARQL"><a href="#三元存储和SPARQL" class="headerlink" title="三元存储和SPARQL"></a>三元存储和SPARQL</h3><p>信息以简单的三部分组成：（主语，谓语，宾语）</p>
+<p>三元组的主语相当于图中的一个顶点，宾语是下面两者之一：</p>
+<ol>
+<li>原始数据类型中的值，例如字符串或数字。在这种情况下，三元组的谓语和宾语相当于主语顶点上的属性的键和值。例如，<code>(lucy, age, 33)</code> 就像属性 <code>&#123;“age”：33&#125;</code> 的顶点 lucy。</li>
+<li>图中的另一个顶点。在这种情况下，谓语是图中的一条边，主语是其尾部顶点，而宾语是其头部顶点。例如，在 <code>(lucy, marriedTo, alain)</code> 中主语和宾语 <code>lucy</code> 和 <code>alain</code> 都是顶点，并且谓语 <code>marriedTo</code> 是连接他们的边的标签。</li>
+</ol>
+<p>SPARQL的一个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PREFIX : &lt;urn:example:&gt;</span><br><span class="line">SELECT ?personName WHERE &#123;</span><br><span class="line">  ?person :name ?personName.</span><br><span class="line">  ?person :bornIn  / :within* / :name &quot;United States&quot;.</span><br><span class="line">  ?person :livesIn / :within* / :name &quot;Europe&quot;.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Datalog"><a href="#Datalog" class="headerlink" title="Datalog"></a>Datalog</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">name(namerica, <span class="string">&#x27;North America&#x27;</span>).</span><br><span class="line">type(namerica, continent).</span><br><span class="line"></span><br><span class="line">name(usa, <span class="string">&#x27;United States&#x27;</span>).</span><br><span class="line">type(usa, country).</span><br><span class="line"><span class="keyword">within</span>(usa, namerica).</span><br><span class="line"></span><br><span class="line">name(idaho, <span class="string">&#x27;Idaho&#x27;</span>).</span><br><span class="line">type(idaho, state).</span><br><span class="line"><span class="keyword">within</span>(idaho, usa).</span><br><span class="line"></span><br><span class="line">name(lucy, <span class="string">&#x27;Lucy&#x27;</span>).</span><br><span class="line">born_in(lucy, idaho).</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>层次模型不利于表示多对多的关系，所以发明了关系模型</p>
+<p>一些应用程序不适合采用关系模型，出现新型非关系型“NoSQL”，主要分为两个方向</p>
+<ol>
+<li><strong>文档数据库</strong> 主要关注自我包含的数据文档，而且文档之间的关系非常稀少。</li>
+<li><strong>图形数据库</strong> 用于相反的场景：任意事物之间都可能存在潜在的关联。</li>
+</ol>
+<p>关系、文档、图形三种模型在今天都被广泛应用。一个模型可以用另一个模型来模拟，但结果往往是糟糕的，所以我们需要针对不同目的使用不同的系统。</p>
+<p>文档数据库和图数据库有一个共同点，那就是它们通常不会将存储的数据强制约束为特定模式，这可以使应用程序更容易适应不断变化的需求。但是应用程序很可能仍会假定数据具有一定的结构；区别仅在于模式是<strong>明确的</strong>（写入时强制）还是<strong>隐含的</strong>（读取时处理）。</p>
+<blockquote>
+<p>一些没有提到的数据模型：</p>
+<ul>
+<li>使用基因组数据的研究人员通常需要执行 <strong>序列相似性搜索</strong>，这意味着需要一个很长的字符串（代表一个 DNA 序列），并在一个拥有类似但不完全相同的字符串的大型数据库中寻找匹配。这里所描述的数据库都不能处理这种用法，这就是为什么研究人员编写了像 GenBank 这样的专门的基因组数据库软件的原因。</li>
+<li>粒子物理学家数十年来一直在进行大数据类型的大规模数据分析，像大型强子对撞机（LHC）这样的项目现在会处理数百 PB 的数据！在这样的规模下，需要定制解决方案来阻止硬件成本的失控。</li>
+<li><strong>全文搜索</strong> 可以说是一种经常与数据库一起使用的数据模型。信息检索是一个很大的专业课题，我们不会在本书中详细介绍，但是我们将在第三章和第三部分中介绍搜索索引。</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">jianjian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://mujian.work/2023/08/04/DDIA%E7%AC%AC%E4%BA%8C%E7%AB%A0/">https://mujian.work/2023/08/04/DDIA%E7%AC%AC%E4%BA%8C%E7%AB%A0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mujian.work" target="_blank">划水摸鱼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></div><div class="post_share"><div class="social-share" data-image="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/04/DDIA%E7%AC%AC%E4%B8%89%E7%AB%A0/"><img class="prev-cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">DDIA第三章</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/15/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BC%80%E5%8F%91/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">数据库开发</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/08/04/DDIA%E7%AC%AC%E4%B8%89%E7%AB%A0/" title="DDIA第三章"><img class="cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-04</div><div class="title">DDIA第三章</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">二. 数据模型与查询语言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%96%87%E6%A1%A3%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">关系模型与文档模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">数据查询语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.3.</span> <span class="toc-text">图数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E5%9B%BE"><span class="toc-number">1.3.1.</span> <span class="toc-text">属性图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cypher%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80"><span class="toc-number">1.3.2.</span> <span class="toc-text">Cypher查询语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E4%B8%AD%E7%9A%84%E5%9B%BE%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.3.3.</span> <span class="toc-text">SQL中的图查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E5%85%83%E5%AD%98%E5%82%A8%E5%92%8CSPARQL"><span class="toc-number">1.3.4.</span> <span class="toc-text">三元存储和SPARQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Datalog"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">Datalog</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By jianjian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Oh, year!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
