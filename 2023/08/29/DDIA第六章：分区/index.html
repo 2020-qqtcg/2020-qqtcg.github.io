@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>DDIA第六章：分区 | 划水摸鱼</title><meta name="keywords" content="分布式"><meta name="author" content="jianjian"><meta name="copyright" content="jianjian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="第六章：分区通常情况下，每条数据属于且仅属于一个分区 分区主要是为了可伸缩性，不同的分区可以放在不共享集群中的不同节点上。因此，大数据可以分布在多个磁盘上，并且负载可以分布在多个处理器上 分区与复制分区与复制通常结合使用，使得每个分区的副本存储在多个节点上 一个节点可能存储多个分区。每个节点可能是某些分区的主库，同时也是其他分区的从库  键值数据的分区分区目标是将数据和查询负载均匀分布在各个节点上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDIA第六章：分区">
+<meta property="og:url" content="https://mujian.work/2023/08/29/DDIA%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E5%8C%BA/index.html">
+<meta property="og:site_name" content="划水摸鱼">
+<meta property="og:description" content="第六章：分区通常情况下，每条数据属于且仅属于一个分区 分区主要是为了可伸缩性，不同的分区可以放在不共享集群中的不同节点上。因此，大数据可以分布在多个磁盘上，并且负载可以分布在多个处理器上 分区与复制分区与复制通常结合使用，使得每个分区的副本存储在多个节点上 一个节点可能存储多个分区。每个节点可能是某些分区的主库，同时也是其他分区的从库  键值数据的分区分区目标是将数据和查询负载均匀分布在各个节点上">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png">
+<meta property="article:published_time" content="2023-08-29T15:36:43.000Z">
+<meta property="article:modified_time" content="2023-08-29T15:42:24.843Z">
+<meta property="article:author" content="jianjian">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png"><link rel="shortcut icon" href="https://s2.loli.net/2022/04/19/pm7NeZBgDW3VJIP.png"><link rel="canonical" href="https://mujian.work/2023/08/29/DDIA%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E5%8C%BA/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":600},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DDIA第六章：分区',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-29 23:42:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/04/19/dkPLexUuNBIclp4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">划水摸鱼</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DDIA第六章：分区</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-29T15:36:43.000Z" title="发表于 2023-08-29 23:36:43">2023-08-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-29T15:42:24.843Z" title="更新于 2023-08-29 23:42:24">2023-08-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DDIA/">DDIA</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DDIA第六章：分区"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="第六章：分区"><a href="#第六章：分区" class="headerlink" title="第六章：分区"></a>第六章：分区</h1><p>通常情况下，每条数据属于且仅属于一个分区</p>
+<p>分区主要是为了可伸缩性，不同的分区可以放在不共享集群中的不同节点上。因此，大数据可以分布在多个磁盘上，并且负载可以分布在多个处理器上</p>
+<h2 id="分区与复制"><a href="#分区与复制" class="headerlink" title="分区与复制"></a>分区与复制</h2><p>分区与复制通常结合使用，使得每个分区的副本存储在多个节点上</p>
+<p>一个节点可能存储多个分区。每个节点可能是某些分区的主库，同时也是其他分区的从库</p>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230829234000814.png" alt="image-20230829234000814"></p>
+<h2 id="键值数据的分区"><a href="#键值数据的分区" class="headerlink" title="键值数据的分区"></a>键值数据的分区</h2><p>分区目标是将数据和查询负载均匀分布在各个节点上</p>
+<p>如果分区是不公平的，一些分区比其他分区有更多的数据或查询，我们成之为<strong>偏斜（shew）</strong> 。数据偏斜的存在使分区效率下降很多。不均衡导致的高负载的分区被称为<strong>热点（hot spot）</strong></p>
+<p>避免热点最简单的方法是将记录随机分配给节点</p>
+<ul>
+<li>平均分配数据</li>
+<li>缺点是无法知道特定值在哪个节点上，必须并行地查询所有的节点</li>
+</ul>
+<h3 id="根据键的范围分区"><a href="#根据键的范围分区" class="headerlink" title="根据键的范围分区"></a>根据键的范围分区</h3><p>为每个键指定一块连续的键范围。如果知道范围之间的边界，则可以轻松确定哪个分区包含值。如果还知道分区所在的节点，就可以直接向相应的节点发出请求</p>
+<p>为了均匀分配数据，分区边界需要依据数据调整。分区边界可以由管理员手动选择，也可以由数据库自动选择</p>
+<p>在每个分区中，可以按照一定的顺序保存键。好处是进行范围扫描很简单</p>
+<p>按照键的分区的缺点是某些特定的访问模式会导致热点。例如主键是时间戳，分区对应时间范围，则最近的写入都可能会转到同一个分区，而其它分区则处于空闲状态</p>
+<h3 id="根据键的散列分区"><a href="#根据键的散列分区" class="headerlink" title="根据键的散列分区"></a>根据键的散列分区</h3><p>一个好的散列函数可以将偏斜的数据均匀分布</p>
+<p>许多编程语言有内置的简单哈希函数，但它们可能不适合分区，同一个键可能在不同的进程中有不同的哈希值</p>
+<p>为每个分区分配散列范围，通过哈希散列落在分区范围内的键将被存储在该分区中</p>
+<p>这种技术擅长在分区之间公平地分配键。分区边界可以是均匀间隔的，也可以是伪随机的（在这种情况下，该技术有时也被称为<strong>一致性哈希</strong>）</p>
+<blockquote>
+<p>一致性哈希</p>
+<ul>
+<li>一致性哈希由 Karger 等人定义。用于跨互联网级别的缓存系统，例如 CDN 中，是一种能均匀分配负载的方法。它使用随机选择的 <strong>分区边界（partition boundaries）</strong> 来避免中央控制或分布式共识的需要</li>
+</ul>
+</blockquote>
+<p>缺点是使用散列进行分区失去了键范围分区快速执行范围查询的能力</p>
+<p>可以采用组合索引的方式进行折中，例如多个列作为主键，第一个列作为散列依据，其余列进行排序，在第一个列固定的情况下，可以根据后面的键进行范围查询</p>
+<h3 id="负载偏斜与热点消除"><a href="#负载偏斜与热点消除" class="headerlink" title="负载偏斜与热点消除"></a>负载偏斜与热点消除</h3><p>哈希分区可以帮助减少热点，但是不能完全避免它们：极端情况下所有读写操作都是针对同一个键的</p>
+<p>大多数数据库无法自动补偿高度偏斜的负载，因此应用程序有责任减少偏斜，例如在被认为是火热的主键结尾添加一个随机数进行分区</p>
+<p>当主键进行分割后，任何读取都必须要做额外的工作，因此对于写入吞吐量低的绝大多数主键来说是不必要的开销</p>
+<h2 id="分区与次级索引"><a href="#分区与次级索引" class="headerlink" title="分区与次级索引"></a>分区与次级索引</h2><p>前面的方案依赖于键值数据模型，都只通过主键访问，如果涉及次级索引，情况会变得更加复杂</p>
+<p>次级索引通常不能唯一标识记录，而是一种搜索记录中特定值的方式</p>
+<p>次级索引的问题是它们不能整齐地映射到分区</p>
+<h3 id="基于文档的分区"><a href="#基于文档的分区" class="headerlink" title="基于文档的分区"></a>基于文档的分区</h3><p>如果每个列表有一个ID，称之为文档ID，用文档ID进行分区</p>
+<p>在将数据添加到数据库时，如果字段申明了索引，数据库分区会自动将其添加到索引条目[索引字段]的文档ID列表中</p>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230829234033130.png" alt="image-20230829234033130"></p>
+<p>在这种索引方法中，每个分区是完全独立的：每个分区维护自己的次级索引，仅覆盖该分区中的文档，不关心存储在其它分区的数据。写入数据库时只需要处理包含你正在编写的文档ID的分区即可。<strong>文档分区索引</strong>也被称为<strong>本地索引</strong></p>
+<p>搜索次级索引，需要将查询发送到所有分区，并合并所有返回的结果</p>
+<p>这种查询分区数据库的方法有时被称为<strong>分散/聚集（scatter/gather）</strong> ，并且可能会使次级索引上的读取查询相当昂贵。即使并行查询分区，也容易导致尾部延迟放大</p>
+<p>但是这种方法被广泛使用</p>
+<h3 id="基于关键词-term-的次级索引进行分区"><a href="#基于关键词-term-的次级索引进行分区" class="headerlink" title="基于关键词(term)的次级索引进行分区"></a>基于关键词(term)的次级索引进行分区</h3><p>可以构建一个覆盖所有分区的<strong>全局索引</strong>，而不是给每个分区创建自己的次级索引（本地索引）</p>
+<ul>
+<li>不能把这个索引存储在一个节点上，因为它可能会称为瓶颈，违背了分区的目的</li>
+<li>全局索引也必须分区，但可以采用与主键不同的分区方式</li>
+</ul>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230829234053534.png" alt="image-20230829234053534"></p>
+<p>例如：来自所有分区的红色汽车在个红色索引中，并且索引是分区</p>
+<p>这种索引被称为<strong>关键词分区（term-partitioned）</strong> ，因为寻找的关键词决定了索引的分区</p>
+<p>我们可以通过关键词本身或它的散列进行索引分区</p>
+<ul>
+<li>根据关键词本身来分区对于范围查询扫描非常有用</li>
+<li>对关键词的哈希分区提供负载均很的能力</li>
+</ul>
+<p>关键词分区的全局索引优于文档问去索引的地方是它可以使读取更有效率，不需要分散/手机所有分区。客户端只需要向包含关键词的分区发出请求</p>
+<p>缺点是写入速度较慢，因为单个写可能会影响索引的多个分区</p>
+<p>理想情况下，索引总是最新的，写入数据库的每个文档都会立即反映在索引中。但是在关键词分区索引中，这需要跨分区的分布式事务</p>
+<p>在实践中，对全局次级索引的更新通常是<strong>异步</strong>的，所做的更改可能不会立即反映在索引中</p>
+<h2 id="分区再平衡"><a href="#分区再平衡" class="headerlink" title="分区再平衡"></a>分区再平衡</h2><p>随时间的推移，数据库会有各种变化</p>
+<ul>
+<li>查询吞吐量增加，想添加更多CPU</li>
+<li>数据集大小增加，想添加更多磁盘和RAM</li>
+<li>机器出现故障，其它机器需要接管故障机器的责任</li>
+</ul>
+<p>所有这些更改都需要数据和请求从一个节点移动到另一个节点，将负载从集群中的一个节点向另一个节点移动的过程称为<strong>再平衡（rebalancing）</strong></p>
+<p>需要满足的最低要求</p>
+<ul>
+<li>再平衡之后，负载应该在集群中的节点之间公平共享</li>
+<li>再平衡发生时，数据库应该继续接受读取和写入</li>
+<li>节点之间只移动必须的数据。以便快速再平衡，并减少网络和磁盘I/O负载</li>
+</ul>
+<h3 id="再平衡策略"><a href="#再平衡策略" class="headerlink" title="再平衡策略"></a>再平衡策略</h3><p>为什么不采用hash mod n</p>
+<ul>
+<li>如果节点数量n发生变化，大多数键都需要移动位置，再平衡成本过高</li>
+</ul>
+<p><strong>固定数量的分区</strong></p>
+<p>创建比节点更多的分区，并为每个节点分配多个分区</p>
+<p>如果一个节点被添加到集群中，新节点可以从当前每个节点中窃取一些分区，直到分区再次公平分配，如果从集群中删除一个节点，则会发生相反的情况</p>
+<p>只有分区在节点之间的移动。分区数量不会改变，键所指定的分区也不会改变。唯一改变的是分区所在的节点。这种变更并不是即时的-在网络上传输大量的数据需要一些时间，所以在传输过程中分区仍然会接受读写操作</p>
+<p><img src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230829234200226.png" alt="image-20230829234200226"></p>
+<p>通过为更强大的节点分配更多的分区，可以强制这些节点承载更多的负载，原则上可以解决集群中的硬件不匹配问题</p>
+<p>在这种配置中，分区的数量通常在数据库第一次建立时就确定，虽然原则上可以分割和合并分区，但固定数量的分区在操作上更简单</p>
+<p>因此，一开始配置的分区就是最大的节点数量，需要足够多的分区以适应未来的增长。但分区太多管理开销也很大</p>
+<p>分区大小</p>
+<ul>
+<li>分区太大，再平衡和从节点故障恢复变得昂贵</li>
+<li>分区太小，会产生太多开销</li>
+</ul>
+<p>如果分区数量固定，但数据变动很大，则难以达到最佳性能</p>
+<p><strong>动态分区</strong></p>
+<p>对于使用键值范围分区的数据库，具有固定边界的固定数量的分区将非常不方便：如果边界错误可能导致一个分区中的所有数据或其它分区中的数据为空，手动重新分配分区边界将非常繁琐</p>
+<p>按键的范围进行分区的数据库会创建动态分区</p>
+<ul>
+<li>当分区增长到超过配置的大小时会被分成两个分区，每个约一半</li>
+<li>如果大量数据被删除并且缩小到某个阈值之下，可以将其与相邻分区合并</li>
+</ul>
+<p>每个分区分配给一个节点，每个节点可以处理多个分区，就像固定数量的分区一样。大型分区拆分后，可以将其中的一半转移到另一个节点以平衡负载</p>
+<p>动态分区的一个优点是分区数量适应总数据量</p>
+<ul>
+<li>如果只有少量数据，少量分区就够了，开销很小</li>
+<li>如果有大量数据，每个分区的大小被限制在一个可配置的最大值</li>
+</ul>
+<p>初始时只有一个分区，所有写入只能由单个节点处理。为了解决这个问题，一些数据库允许在一个空的数据库上配置一组初始分区（<strong>预分割 pre-splitting</strong>）</p>
+<p>动态分区不仅适用于数据的范围分区，而且也适用于散列分区</p>
+<p><strong>按节点比例分区</strong></p>
+<p>动态分区中，分区的数量与数据集的大小成正比</p>
+<p>固定数量的分区中，分区的大小与数据集的大小成正比</p>
+<p>按节点比例分区，每个节点具有固定数量的分区。每个分区的大小与数据集大小成比例地增长，而节点数量保持不变。但是当增加节点数时，分区将再次变小。这种方法使得每个分区的大小较为稳定</p>
+<p>当一个新节点加入集群时，它随机选择固定数量的现有分区进行拆分，然后占有这些拆分分区中每个分区的一半，同时将每个分区的另一半留在原地。随机化可能会产生不公平的分割，但是平均在更大数量的分区上时，新节点最终从现有节点获得公平的负载份额</p>
+<p>随机选择分区边界要求使用基于散列的分区（从散列函数产生的数字范围中挑选边界）。实际上，这种方法最符合一致性哈希的原始定义</p>
+<h3 id="运维"><a href="#运维" class="headerlink" title="运维"></a>运维</h3><p>再平衡是选择自动还是手动？</p>
+<p>在全自动和完全手动之间有一个权衡</p>
+<p>全自动再平衡很方便，但是是不可预测的。再平衡是一个昂贵的操作，如果没有做好可能会使网络或节点负载过重，降低请求性能</p>
+<blockquote>
+<p>这种自动化与自动故障检测相结合可能十分危险。例如，假设一个节点过载，并且对请求的响应暂时很慢。其他节点得出结论：过载的节点已经死亡，并自动重新平衡集群，使负载离开它。这会对已经超负荷的节点，其他节点和网络造成额外的负载，从而使情况变得更糟，并可能导致级联失败。</p>
+</blockquote>
+<p>再平衡过程中有人参与是一件好事，这比全自动的过程慢，但可以帮助防止运维意外</p>
+<h2 id="请求路由"><a href="#请求路由" class="headerlink" title="请求路由"></a>请求路由</h2><p>用户想要发出请求时，如何知道连接到哪个节点？随着分区重新分配，分区对节点的分配也产生了变化</p>
+<p>这个问题可以概括为<strong>服务发现（service discovery）</strong></p>
+<p>几个解决方案</p>
+<ol>
+<li>允许客户联系任何节点（例如通过循环策略的负载均衡）。如果该节点恰巧拥有请求分区则可以直接处理该请求；否则将请求转发到适当的节点，接收回复并传递给客户端</li>
+<li>首先将所有请求发送到路由层，它决定了应该处理请求的节点，并相应地转发</li>
+<li>要求客户端知道分区和节点的分配，直接连接到合适的节点</li>
+</ol>
+<p>关键问题是，作出路由决策的组件如何了解分区-节点之间的分配关系变化</p>
+<p>这是一个具有挑战性的问题，因为重要的是所有参与者都达成共识，否则请求将被发送到错误的节点</p>
+<p>许多分布式数据系统都依赖一个独立的协调服务。例如ZooKeeper来跟踪集群元数据。节点在ZooKeeper中注册自己，ZooKeeper维护分区到节点的可靠映射。其它参与者可以在ZooKeeper中订阅此信息，只要有分区或节点的改变，ZooKeeper就会通知路由层使路由信息保持最新状态</p>
+<blockquote>
+<p>HBase、SolrCloud和Kafka使用ZooKeeper来跟踪分区分配。MongoDB具有类似的体系结构，但它依赖于自己的<strong>配置服务器（config server）</strong> 实现和mongos守护进程作为路由层</p>
+</blockquote>
+<p>Cassandra和Riak在节点之间采用<strong>流言协议（gossip protocol）</strong> 来传播集群状态的变化。请求可以发送到任意节点，该节点会转发到包含所请求的分区的适当节点。这个模型在数据库节点中增加了更多的复杂性，但避免了对外部协调服务的依赖</p>
+<p>当使用路由层或向随机节点发送请求时，客户端仍然需要找到要连接的IP地址。这些地址并不像分区的节点分布变化的那么快，所以使用DNS就足够了</p>
+<h3 id="执行并行查询"><a href="#执行并行查询" class="headerlink" title="执行并行查询"></a>执行并行查询</h3><p>通常用于分析的<strong>大规模并行处理（MPP）</strong> 关系型数据库产品在其支持的查询类型方面要复杂得多。MPP查询优化器可以将典型数据仓库的复杂查询分解成许多执行阶段和分区，其中许多可以在数据库集群的不同节点上并行执行</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>分区的目的是在多台机器上均匀分布数据和查询负载，避免出现热点</p>
+<p>两种主要的分区方法</p>
+<ul>
+<li><p>键范围分区</p>
+<ul>
+<li>优势是范围查询快</li>
+<li>缺点是如果应用程序经常访问相邻的键则存在热点的风险</li>
+<li>分区变得很大时通常将分区分成连个子分区来动态重新平衡分区</li>
+</ul>
+</li>
+<li><p>散列分区</p>
+<ul>
+<li>优势是均匀分配负载</li>
+<li>缺点是范围查询效率低下</li>
+<li>通常提前创建固定数量的分区，为每个节点分配多个分区，并在添加或删除节点时将分区再节点之间移动。也可以使用动态分区</li>
+</ul>
+</li>
+</ul>
+<p>次级索引分区的两种主要方法</p>
+<ul>
+<li>基于文档分区（本地索引）</li>
+<li>基于关键词分区（全局索引）</li>
+</ul>
+<p>按照设计，多数情况下每个分区是独立运行的，这就是分区数据库可以伸缩到多台机器的原因，但是需要写入多个分区的操作结果可能难以预料</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">jianjian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://mujian.work/2023/08/29/DDIA%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E5%8C%BA/">https://mujian.work/2023/08/29/DDIA%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E5%8C%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mujian.work" target="_blank">划水摸鱼</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></div><div class="post_share"><div class="social-share" data-image="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/08/20/DDIA%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E5%A4%8D%E5%88%B6/"><img class="next-cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">DDIA第五章：复制</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/08/04/DDIA%E7%AC%AC%E4%BA%8C%E7%AB%A0/" title="DDIA第二章"><img class="cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-04</div><div class="title">DDIA第二章</div></div></a></div><div><a href="/2023/08/04/DDIA%E7%AC%AC%E4%B8%89%E7%AB%A0/" title="DDIA第三章"><img class="cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-04</div><div class="title">DDIA第三章</div></div></a></div><div><a href="/2023/08/20/DDIA%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E5%A4%8D%E5%88%B6/" title="DDIA第五章：复制"><img class="cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">DDIA第五章：复制</div></div></a></div><div><a href="/2023/08/19/DDIA%E7%AC%AC%E5%9B%9B%E7%AB%A0/" title="DDIA第四章"><img class="cover" src="https://common-mj.oss-cn-shanghai.aliyuncs.com/mjimg0/image-20230804220248255.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">DDIA第四章</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%88%86%E5%8C%BA"><span class="toc-number">1.</span> <span class="toc-text">第六章：分区</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E4%B8%8E%E5%A4%8D%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">分区与复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E5%8C%BA"><span class="toc-number">1.2.</span> <span class="toc-text">键值数据的分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E9%94%AE%E7%9A%84%E8%8C%83%E5%9B%B4%E5%88%86%E5%8C%BA"><span class="toc-number">1.2.1.</span> <span class="toc-text">根据键的范围分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E9%94%AE%E7%9A%84%E6%95%A3%E5%88%97%E5%88%86%E5%8C%BA"><span class="toc-number">1.2.2.</span> <span class="toc-text">根据键的散列分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%81%8F%E6%96%9C%E4%B8%8E%E7%83%AD%E7%82%B9%E6%B6%88%E9%99%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">负载偏斜与热点消除</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E4%B8%8E%E6%AC%A1%E7%BA%A7%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.</span> <span class="toc-text">分区与次级索引</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%96%87%E6%A1%A3%E7%9A%84%E5%88%86%E5%8C%BA"><span class="toc-number">1.3.1.</span> <span class="toc-text">基于文档的分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%B3%E9%94%AE%E8%AF%8D-term-%E7%9A%84%E6%AC%A1%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%BF%9B%E8%A1%8C%E5%88%86%E5%8C%BA"><span class="toc-number">1.3.2.</span> <span class="toc-text">基于关键词(term)的次级索引进行分区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E5%86%8D%E5%B9%B3%E8%A1%A1"><span class="toc-number">1.4.</span> <span class="toc-text">分区再平衡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%8D%E5%B9%B3%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-number">1.4.1.</span> <span class="toc-text">再平衡策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%BB%B4"><span class="toc-number">1.4.2.</span> <span class="toc-text">运维</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E8%B7%AF%E7%94%B1"><span class="toc-number">1.5.</span> <span class="toc-text">请求路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%B9%B6%E8%A1%8C%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.5.1.</span> <span class="toc-text">执行并行查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">小结</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By jianjian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Oh, year!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
